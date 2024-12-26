@@ -1,9 +1,9 @@
-from typing import List
 import json
+from typing import List
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from celery.result import AsyncResult
-from app.services.amazon_product_extractor import Crawler
+from app.services.amazon_product_extractor import ProductDataManager
 from app.services.crawling_service import (
     app as celery_app,
     extract_and_save_product,
@@ -23,16 +23,16 @@ async def compare_product(product_url: List[str]):
     print("product_urls : ", product_url)
     for url in product_url:
         try:
-            product_hash = Crawler.hash_url(url)
+            product_hash = ProductDataManager.hash_url(url)
         except Exception as e:
             raise HTTPException(status_code=400, detail=str(e))
 
         try:
-            await Crawler.exists_in_db(product_hash)
+            await ProductDataManager.exists_in_db(product_hash)
             print(
-                f"Product already exists in the database {Crawler._get_product_path(product_hash)}"
+                f"Product already exists in the database {ProductDataManager._get_product_path(product_hash)}"
             )
-            with open(Crawler._get_product_path(product_hash), "r") as f:
+            with open(ProductDataManager._get_product_path(product_hash), "r") as f:
                 result.append(json.load(f))
             return result
         except Exception as e:

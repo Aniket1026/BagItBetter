@@ -29,20 +29,21 @@ class UnableToCrawlProductError(Exception):
 product_data_folder = "products"
 
 
-class Crawler:
-    def __init__(self, url: str):
-        self.url = url
+class ProductDataManager:
+
+    def __init__(self, product_url: str):
+        self.product_url = product_url
 
     @staticmethod
-    def hash_url(url: str) -> str:
-        _url = url.split("?")[0].split("#")[0]
+    def hash_url(product_url: str) -> str:
+        _url = product_url.split("?")[0].split("#")[0]
         if not validators.url(_url):
-            raise InvalidUrlError(f"URL {url} is not valid")
+            raise InvalidUrlError(f"URL {product_url} is not valid")
 
         try:
             return hashlib.md5(_url.encode()).hexdigest()
         except Exception as _:
-            raise UnHashableUrlError(f"URL {url} is not hashable")
+            raise UnHashableUrlError(f"URL {product_url} is not hashable")
 
     @staticmethod
     def _get_product_path(product_hash: str) -> str:
@@ -50,7 +51,9 @@ class Crawler:
 
     async def save_to_db(product_hash: str, details: list, reviews: list) -> None:
         try:
-            with open(Crawler._get_product_path(product_hash=product_hash), "w") as f:
+            with open(
+                ProductDataManager._get_product_path(product_hash=product_hash), "w"
+            ) as f:
                 json.dump(
                     {
                         "details": details[0],
@@ -66,17 +69,19 @@ class Crawler:
 
     @staticmethod
     def exists_in_db(product_hash: str) -> bool:
-        if os.path.exists(Crawler._get_product_path(product_hash=product_hash)):
+        if os.path.exists(ProductDataManager._get_product_path(product_hash=product_hash)):
             return True
         raise ProductNotFoundInDatabaseError(
             f"Product with hash {product_hash} not found"
         )
 
     @staticmethod
-    async def extract(url: str, extraction_strategy: ExtractionStrategy) -> list[dict]:
+    async def extract(
+        product_url: str, extraction_strategy: ExtractionStrategy
+    ) -> list[dict]:
         async with AsyncWebCrawler(verbose=True, headless=True) as crawler:
             result = await crawler.arun(
-                url=url,
+                product_url=product_url,
                 extraction_strategy=extraction_strategy,
                 bypass_cache=True,
                 verbose=False,
