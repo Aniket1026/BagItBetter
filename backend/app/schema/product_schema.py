@@ -4,13 +4,18 @@ amazon_product_schema = {
     "fields": [
         {
             "name": "title",
-            "selector": "span#productTitle",
             "type": "text",
+            "selector": "span#productTitle",
+        },
+        {
+            "name": "currency",
+            "type": "text",
+            "selector": "div.a-section>span.a-price>span>span.a-price-symbol",
         },
         {
             "name": "price",
             "type": "text",
-            "selector": "span#priceblock_ourprice",
+            "selector": "div.a-section>span.a-price>span>span.a-price-whole",
         },
         {
             "name": "rating",
