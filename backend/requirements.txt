@@ -4,3 +4,6 @@ crawl4ai==0.3.71
 validators==0.34.0
 uvicorn==0.32.1
 celery==5.4.0
+openai=1.57.4
+langchain==0.3.12
+langchain-openai==0.2.12
