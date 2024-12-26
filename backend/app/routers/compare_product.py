@@ -8,7 +8,7 @@ from app.services.crawling_service import (
     app as celery_app,
     extract_and_save_product,
 )
-
+from app.services.llm_service import LLMService
 
 class ProductUrl(BaseModel):
     url: List[str]
@@ -63,3 +63,13 @@ async def task_status(task_id: str):
         return {"status": task_result.state, "error": str(task_result.info)}
     else:
         return {"status": task_result.state}
+
+
+@router.post("/products/compare-and-recommend")
+async def generate_advice(products_info: List[dict]):
+    llm_service = LLMService()
+    try:
+        response = llm_service.generate_response(products_info)
+        return {"response": response}
+    except Exception as e:
+        return {"error": str(e)}
