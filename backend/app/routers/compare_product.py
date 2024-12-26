@@ -9,6 +9,9 @@ from app.services.crawling_service import (
     extract_and_save_product,
 )
 from app.services.llm_service import LLMService
+from app.utils.logging_config import Logger
+
+logger = Logger().get_logger()
 
 class ProductUrl(BaseModel):
     url: List[str]
@@ -29,15 +32,14 @@ async def compare_product(product_url: List[str]):
 
         try:
             await ProductDataManager.exists_in_db(product_hash)
-            print(
+            logger.info(
                 f"Product already exists in the database {ProductDataManager._get_product_path(product_hash)}"
             )
             with open(ProductDataManager._get_product_path(product_hash), "r") as f:
                 result.append(json.load(f))
             return result
         except Exception as e:
-            print("Product not found in the database , crawling the product......")
-
+            logger.info(f"Product does not exist in the database {str(e)}")
         try:
             task = extract_and_save_product.delay(url, product_hash)
             result.append(
@@ -48,7 +50,7 @@ async def compare_product(product_url: List[str]):
                 }
             )
         except Exception as e:
-            print("Unable to extract product details : ", e)
+            logger.error(f"Unable to extract product details : {str(e)}")
             raise HTTPException(status_code=400, detail=str(e))
 
     return {"message": "Tasks enqueued", "results": result}
@@ -69,7 +71,9 @@ async def task_status(task_id: str):
 async def generate_advice(products_info: List[dict]):
     llm_service = LLMService()
     try:
+        logger.info(f"Generating recommendation for products: {products_info}") 
         response = llm_service.generate_response(products_info)
         return {"response": response}
     except Exception as e:
+        logger.error(f"Error generating advice: {str(e)}")
         return {"error": str(e)}
