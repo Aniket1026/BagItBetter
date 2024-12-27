@@ -2,3 +2,4 @@
 /products
 __pycache__/
 .env
+app.log

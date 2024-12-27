@@ -1,4 +1,5 @@
 import asyncio
+import os
 from crawl4ai.extraction_strategy import JsonCssExtractionStrategy
 from app.schema.product_schema import amazon_product_schema
 from app.schema.product_review import amazon_product_reviews_schema
@@ -6,7 +7,7 @@ from app.utils.celery_client import CeleryClient
 from app.services.amazon_product_extractor import ProductDataManager
 
 app = CeleryClient.get_app(
-    "crawler", "redis://localhost:6379/0", "redis://localhost:6379/0"
+    "crawler", os.getenv("BROKER_URL"), os.getenv("BACKEND_URL")
 )
 
 

@@ -79,9 +79,9 @@ class ProductDataManager:
     async def extract(
         product_url: str, extraction_strategy: ExtractionStrategy
     ) -> list[dict]:
-        async with AsyncWebCrawler(verbose=True, headless=True) as crawler:
+        async with AsyncWebCrawler(verbose=False, headless=True) as crawler:
             result = await crawler.arun(
-                product_url=product_url,
+                url=product_url,
                 extraction_strategy=extraction_strategy,
                 bypass_cache=True,
                 verbose=False,

@@ -1,5 +1,6 @@
 import os
 from langchain_openai import OpenAI
+from app.utils.product_formatter import format_product_data
 
 class LLMService:
     def __init__(self):
@@ -8,28 +9,10 @@ class LLMService:
             temperature=0,
             max_retries=2,
             api_key=os.getenv("OPEN_API_KEY"),
-        )
-
-    def format_product_data(self, product_data: list) -> str:
-        formatted_products = []
-        for product in product_data:
-            details = product["details"]
-            reviews = product.get("reviews", [{}])[0].get("reviews", [])
-            formatted_product = f"""
-            Title: {details['title']}
-            Price: {details['currency']}{details['price']}
-            Rating: {details['rating']}
-
-            Reviews:
-            """
-        for review in reviews[:3]:
-            formatted_product += f"- {review['title']}: {review['text']}\n"
-        formatted_products.append(formatted_product.strip())
-
-        return "\n\n".join(formatted_products)    
+        )   
 
     def generate_response(self,product_data) -> str:
-        formatted_product_data = self.format_product_data(product_data)
+        formatted_product_data = format_product_data(product_data)
         formatted_prompt = f"""
             You are a advisor for customers who are planning to buy a product from an ecommerce site.
             The customers are confused between the various products.
@@ -47,3 +30,5 @@ class LLMService:
                                                     
             """
         return self.llm.invoke(formatted_prompt)
+
+llm_service = LLMService()
