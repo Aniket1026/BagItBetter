@@ -8,8 +8,8 @@ from app.services.crawling_service import (
     app as celery_app,
     extract_and_save_product,
 )
-from app.services.llm_service import LLMService
 from app.utils.logging_config import Logger
+from app.services.llm_service import llm_service
 
 logger = Logger().get_logger()
 
@@ -69,7 +69,6 @@ async def task_status(task_id: str):
 
 @router.post("/products/compare-and-recommend")
 async def generate_advice(products_info: List[dict]):
-    llm_service = LLMService()
     try:
         logger.info(f"Generating recommendation for products: {products_info}") 
         response = llm_service.generate_response(products_info)
