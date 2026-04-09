@@ -47,13 +47,17 @@ class ProductDataManager:
 
     @staticmethod
     def _get_product_path(product_hash: str) -> str:
-        return f"{product_data_folder}/{product_hash}.json"
+        return os.path.join(product_data_folder, f"{product_hash}.json")
+
+    @staticmethod
+    def _ensure_product_directory_exists(file_path: str) -> None:
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
     async def save_to_db(product_hash: str, details: list, reviews: list) -> None:
+        product_path = ProductDataManager._get_product_path(product_hash=product_hash)
+        ProductDataManager._ensure_product_directory_exists(product_path)
         try:
-            with open(
-                ProductDataManager._get_product_path(product_hash=product_hash), "w"
-            ) as f:
+            with open(product_path, "w") as f:
                 json.dump(
                     {
                         "details": details[0],
