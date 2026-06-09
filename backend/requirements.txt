@@ -1,5 +1,5 @@
 fastapi==0.115.6
-requests==2.32.3
+requests==2.32.2
 crawl4ai==0.3.71
 validators==0.34.0
 uvicorn==0.32.1
@@ -8,8 +8,10 @@ openai==1.57.4
 langchain==0.3.12
 langchain-openai==0.2.12
 python-dotenv==1.0.1
-sqlmodel==
-asyncpg==
+sqlmodel==0.0.38
+asyncpg==0.31.0
 alembic==1.14.0
 passlib==1.7.4
 bcrypt==4.3.0
+redis==3.4.1
+psycopg2-binary==2.9.12

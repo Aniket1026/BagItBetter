@@ -1,0 +1,25 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "alembic==1.14.0",
+    "asyncpg==0.31.0",
+    "bcrypt==4.3.0",
+    "celery==5.4.0",
+    "crawl4ai==0.3.71",
+    "fastapi==0.115.6",
+    "langchain==0.3.12",
+    "langchain-openai==0.2.12",
+    "openai==1.57.4",
+    "passlib==1.7.4",
+    "psycopg2-binary==2.9.12",
+    "python-dotenv==1.0.1",
+    "redis==3.4.1",
+    "requests==2.32.2",
+    "sqlmodel==0.0.38",
+    "uvicorn==0.32.1",
+    "validators==0.34.0",
+]
