@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  backend:
+    build: .
+    container_name: backend
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+  
+  worker:
+    build: .
+    container_name: celery_worker
+    command: celery -A app.services.crawling_service worker --loglevel=INFO --pool=solo
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+  
+  redis:
+    image: redis:7.2.5-alpine
+    container_name: redis
+
+  postgres:
+    image: postgres:16.3-alpine
+    container_name: postgres
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+volumes:
+  postgres_data:
