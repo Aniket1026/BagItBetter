@@ -43,14 +43,14 @@ class LLMTask(SQLModel, table=True):
     id: UUID = Field(default=uuid4(), primary_key=True)
     status: JobStatus = Field(
         sa_column=COLUMN(
-            PGEnum(JobStatus, name="jobstatus", create_type=False),
+            PGEnum(JobStatus, name="jobstatus", create_type=True),
             nullable=False,
             server_default=JobStatus.Pending.value,
         )
     )
     task_type: Task = Field(
         sa_column=COLUMN(
-            PGEnum(Task, name="task", create_type=False),
+            PGEnum(Task, name="task", create_type=True),
             nullable=False,
             server_default=Task.Unknown.value,
         )
@@ -70,14 +70,14 @@ class JobTracker(SQLModel, table=True):
     task_id: str = Field(default="")
     task_type: Task = Field(
         sa_column=COLUMN(
-            PGEnum(Task, name="task", create_type=False),
+            PGEnum(Task, name="task", create_type=True),
             nullable=False,
             server_default=Task.Unknown.value,
         )
     )
     status: JobStatus = Field(
         sa_column=COLUMN(
-            PGEnum(JobStatus, name="jobstatus", create_type=False),
+            PGEnum(JobStatus, name="jobstatus", create_type=True),
             nullable=False,
             server_default=JobStatus.Pending.value,
         )
