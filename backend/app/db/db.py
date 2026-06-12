@@ -18,9 +18,9 @@ class DatabaseConfig:
     def __init__(self):
         self.host = os.getenv("DB_HOST")
         self.port = os.getenv("DB_PORT")
-        self.user = os.getenv("DB_USER", "postgres")
-        self.password = os.getenv("DB_PASSWORD")
-        self.database = os.getenv("DB_NAME")
+        self.user = os.getenv("POSTGRES_USER", "postgres")
+        self.password = os.getenv("POSTGRES_PASSWORD")
+        self.database = os.getenv("POSTGRES_DB")
 
         if not all([self.host, self.port, self.user, self.password, self.database]):
             raise ValueError(
